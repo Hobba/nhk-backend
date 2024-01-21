@@ -1,5 +1,6 @@
 package com.nerdhalbkugel
 
+import com.nerdhalbkugel.domain.BroadcastMessageService
 import com.nerdhalbkugel.domain.RegisterDeviceService
 import com.nerdhalbkugel.plugins.*
 import io.ktor.server.application.*
@@ -12,6 +13,7 @@ import org.koin.mp.KoinPlatform.startKoin
 val modules = listOf(
     module {
         single { RegisterDeviceService() }
+        single { BroadcastMessageService() }
     }
 )
 
@@ -23,11 +25,13 @@ fun main() {
         host = "0.0.0.0",
         module = Application::module
     ).start(wait = true)
+
 }
 
 fun Application.module() {
     configureSerialization()
     configureRouting()
+    configureFirebase()
 }
 
 

@@ -1,36 +1,32 @@
 package com.nerdhalbkugel.domain
 
-import com.google.auth.oauth2.GoogleCredentials
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.Message
-import com.google.firebase.messaging.Notification
-import java.io.FileInputStream
+import com.google.api.core.ApiFuture
+import com.google.cloud.firestore.DocumentReference
+import com.google.cloud.firestore.Firestore
+import com.google.cloud.firestore.WriteResult
+import com.google.firebase.cloud.FirestoreClient
+import io.ktor.http.*
+import java.util.*
 
 
 class RegisterDeviceService {
+    fun run(registrationToken: String): HttpStatusCode {
+        val db: Firestore = FirestoreClient.getFirestore()
+        val query = db.collection("tokens").get()
+        val querySnapshot = query.get()
+        val documents = querySnapshot.documents
+        val tokenExists = documents.any { it.data["value"] == registrationToken }
 
-    fun register(registrationToken: String) {
-        val refreshToken = FileInputStream("/Users/robin/Dev/service-account-file.json")
+        if (!tokenExists) {
+            val docRef: DocumentReference = db.collection("tokens").document(UUID.randomUUID().toString())
 
-        val options = FirebaseOptions.builder()
-            .setCredentials(GoogleCredentials.fromStream(refreshToken))
-            .build()
+            val data: MutableMap<String, Any> = HashMap()
+            data["value"] = registrationToken
 
-        FirebaseApp.initializeApp(options)
-
-        val message: Message = Message.builder()
-            .setNotification(
-                Notification.builder()
-                    .setTitle("Title")
-                    .setBody("Body")
-                    .build()
-            )
-            .setToken(registrationToken)
-            .build()
-
-        FirebaseMessaging.getInstance().send(message)
+            val result: ApiFuture<WriteResult> = docRef.set(data)
+            return HttpStatusCode.Created
+        } else {
+            return HttpStatusCode.OK
+        }
     }
-
 }
