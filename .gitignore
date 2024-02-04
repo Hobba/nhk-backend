@@ -34,3 +34,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Custom ####
+deploy-nhk-backend.sh
+oauth-client-id.json

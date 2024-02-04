@@ -1,5 +1,5 @@
-val ktor_version: String by project
-val kotlin_version: String by project
+val ktor_version = "2.3.8"
+val kotlin_version = "1.9.20"
 
 plugins {
     kotlin("jvm") version "1.9.22"

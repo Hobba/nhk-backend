@@ -17,6 +17,8 @@ val modules = listOf(
     }
 )
 
+val appEnv = System.getenv("APP_ENV") ?: "local"
+
 fun main() {
     startKoin(modules, Level.INFO)
     embeddedServer(
@@ -25,13 +27,12 @@ fun main() {
         host = "0.0.0.0",
         module = Application::module
     ).start(wait = true)
-
 }
 
 fun Application.module() {
     configureSerialization()
     configureRouting()
-    configureFirebase()
+    configureFirebase(appEnv)
 }
 
 
