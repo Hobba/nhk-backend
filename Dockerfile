@@ -1,6 +1,6 @@
 # Use a base image with JDK (Java Development Kit) installed.
 # You can choose a tag based on the JDK version you need.
-FROM openjdk:11-jre-slim as builder
+FROM openjdk:17-jdk-slim as builder
 
 # Set the working directory in the container
 WORKDIR /app
